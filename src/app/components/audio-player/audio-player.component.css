@@ -1,0 +1,94 @@
+.audio-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .centered-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  
+  .form-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .centered-field {
+    margin-bottom: 20px;
+  }
+  
+  .time-inputs {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .time-field {
+    width: 48%;
+  }
+  
+  .centered-buttons {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 20px 0;
+  }
+  
+  .centered-button {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 20px 0;
+  }
+  
+  .control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 20%;
+    align-items: center;
+  }
+  
+  .cut-slider {
+    width: 100%;
+    margin: 20px 0;
+  }
+  
+  .progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .cut-complete {
+    text-align: center;
+    margin-top: 20px;
+  }
+  

@@ -67,11 +67,6 @@ export class AudioService {
     return this.http.get<string[]>(`${this.apiUrl}/list`);
   }
 
-  // Método para listar todos os arquivos de áudio na pasta cortes
-  listAllAudioFilesInCortes(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/list/cortes`);
-  }
-
   // Método para baixar um arquivo de áudio específico (cortes)
   downloadAudio(fileName: string): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/download/${fileName}`, { responseType: 'blob' });

@@ -19,7 +19,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { NouisliderModule } from 'ng2-nouislider';
-
+import { MatListModule } from '@angular/material/list'; // Importa o MatListModule
+import { MatIconModule } from '@angular/material/icon'; // Importa o MatIconModule
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,8 +43,10 @@ import { NouisliderModule } from 'ng2-nouislider';
     MatProgressBarModule,
     MatSelectModule,
     MatOptionModule,
-    NgxSliderModule,   
-    NouisliderModule , 
+    NgxSliderModule,
+    NouisliderModule ,
+    MatListModule,            // Adiciona o MatListModule
+    MatIconModule,
 
   ],
   providers: [],

@@ -25,12 +25,16 @@ export class AudioPlayerComponent implements OnInit {
   cutAudioUrl = '';  // URL do áudio cortado
   audio!: HTMLAudioElement;  // Instância do objeto Audio
   currentTime = 0; // Tempo atual do áudio
+  cutsList: Record<string, string[]> = {};  // Define que cutsList é um objeto com chaves do tipo string e valores do tipo array de strings
+  selectedSubfolder: string = '';  // Subpasta selecionada
+  filesInSelectedSubfolder: string[] = [];  // Lista de arquivos da subpasta selecionada
 
   constructor(private audioService: AudioService) {}
 
   ngOnInit() {
     this.loadRadios();
     this.initializeSliderOptions();
+    this.loadCutsList();  // Carrega a lista de cortes ao inicializar
   }
 // Função para realizar o corte de áudio (simulado no frontend)
 onCutAudio() {
@@ -152,4 +156,41 @@ onCutAudio() {
       }
     };
   }
+  // Método para listar todas as subpastas e arquivos na pasta de cortes
+  loadCutsList() {
+    this.audioService.listCortes().subscribe((cuts) => {
+      this.cutsList = cuts;
+      this.subfolders = Object.keys(this.cutsList);  // Pega as subpastas
+    }, error => {
+      console.error('Erro ao carregar a lista de subpastas:', error);
+    });
+  }
+
+  // Método chamado quando uma subpasta é selecionada
+  onSubfolderSelect() {
+    if (this.selectedSubfolder) {
+      this.filesInSelectedSubfolder = this.cutsList[this.selectedSubfolder] || [];  // Lista os arquivos da subpasta selecionada
+    }
+  }
+
+  // Método chamado quando um arquivo de áudio é selecionado
+  onAudioSelect() {
+    if (this.selectedAudio) {
+      this.playCut(this.selectedAudio);
+    }
+  }
+
+  // Método para reproduzir o corte selecionado
+  playCut(file: string) {
+  //   const cutAudioUrl = `${this.audioService.getAudioBaseUrl()}/cortes/${file}`;
+
+  //   if (this.currentAudio) {
+  //     this.currentAudio.pause();  // Pausa o áudio atual se já estiver tocando
+  //   }
+
+  //   this.currentAudio = new Audio(cutAudioUrl);
+  //   this.currentAudio.play();
+  // }
+}
+  // Método para reproduzir o corte selecionado
 }

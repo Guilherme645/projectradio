@@ -1,27 +1,27 @@
 <div class="container">
-  <!-- Seção de seleção de rádios -->
+  <!-- Quadrado 1: Seleção de Rádio -->
   <div class="section radios">
     <h2>Selecione uma Rádio</h2>
-    <mat-form-field>
-      <mat-label>Rádio</mat-label>
+    <mat-form-field appearance="fill">
+      <mat-label>Rádio:</mat-label>
       <mat-select [(ngModel)]="selectedRadio" (selectionChange)="onRadioSelect()">
         <mat-option *ngFor="let radio of radios" [value]="radio">{{ radio }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
-  <!-- Seção de arquivos de áudio -->
+  <!-- Quadrado 2: Seleção de Arquivo de Áudio -->
   <div class="section audio-files">
-    <h2>Selecione um Arquivo de Áudio</h2>
-    <mat-form-field>
-      <mat-label>Áudio</mat-label>
+    <h2>Selecione um Áudio de uma Rádio</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Áudio:</mat-label>
       <mat-select [(ngModel)]="selectedAudio" (selectionChange)="onAudioFileSelect()">
         <mat-option *ngFor="let file of audioFiles" [value]="file">{{ file }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
-  <!-- Player de Áudio e controles -->
+  <!-- Quadrado 3: Player de Áudio -->
   <div class="section audio-player">
     <h2>Player de Áudio</h2>
     <div class="controls">
@@ -31,37 +31,55 @@
       </button>
       <button mat-icon-button (click)="stepForward()">&#9654;&#9654;</button>
     </div>
-    <audio #audioPlayer controls *ngIf="audioUrl">
-      <source [src]="audioUrl" type="audio/mpeg">
-      Seu navegador não suporta o elemento de áudio.
-    </audio>
   </div>
 
+  <!-- Quadrado 4: Definir Corte de Áudio -->
   <div class="section cut-range">
     <h2>Definir Corte de Áudio</h2>
-    <ngx-slider [(value)]="range[0]" [(highValue)]="range[1]" [options]="sliderOptions" class="cut-slider" (userChangeEnd)="seekTo(range[0])"></ngx-slider>
+    <ngx-slider [(value)]="range[0]" [(highValue)]="range[1]" [options]="sliderOptions" class="cut-slider"></ngx-slider>
 
     <div class="time-inputs">
       <div class="control">
         <label for="startTime">Início do corte</label>
         <input type="number" [(ngModel)]="range[0]" step="0.01" (change)="seekTo(range[0])">
       </div>
+      <br>
+      <br>
       <div class="control">
         <label for="endTime">Final do corte</label>
+
         <input type="number" [(ngModel)]="range[1]" step="0.01" (change)="seekTo(range[1])">
       </div>
     </div>
 
-    <!-- Controles de reprodução personalizados -->
-    <div class="controls">
-      <button mat-icon-button (click)="stepBackward()">&#9664;&#9664;</button>
-      <button mat-icon-button (click)="togglePlayPause()">
-        {{ isPlaying ? '&#10074;&#10074;' : '&#9654;' }}
-      </button>
-      <button mat-icon-button (click)="stepForward()">&#9654;&#9654;</button>
-    </div>
-
-    <!-- Exibir tempo atual de reprodução -->
     <p>Tempo atual: {{ currentTime }}s</p>
+
     <button mat-raised-button color="primary" (click)="onCutAudio()">Fazer Corte</button>
   </div>
+
+  <!-- Quadrado 5: Seleção de Subpasta -->
+  <div class="section subfolder-selection">
+    <h2>Selecione uma data</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Data:</mat-label>
+      <mat-select [(ngModel)]="selectedSubfolder" (selectionChange)="onSubfolderSelect()">
+        <mat-option *ngFor="let subfolder of subfolders" [value]="subfolder">
+          {{ subfolder }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Quadrado 6: Seleção de Arquivo de Áudio da Subpasta -->
+  <div class="section subfolder-audio-files">
+    <h2>Selecione um corte</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Corte:</mat-label>
+      <mat-select [(ngModel)]="selectedAudio" (selectionChange)="onAudioSelect()">
+        <mat-option *ngFor="let file of filesInSelectedSubfolder" [value]="file">
+          {{ file }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>

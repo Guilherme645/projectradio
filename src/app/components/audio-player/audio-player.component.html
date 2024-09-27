@@ -1,61 +1,67 @@
-<!-- Select a Radio -->
-<h2>Selecione uma Rádio</h2>
-<mat-form-field>
-  <mat-label>Rádio</mat-label>
-  <mat-select [(ngModel)]="selectedRadio" (selectionChange)="onRadioSelect()">
-    <mat-option *ngFor="let radio of radios" [value]="radio">{{ radio }}</mat-option>
-  </mat-select>
-</mat-form-field>
-
-<!-- Select a Folder -->
-<h2>Selecione uma Pasta</h2>
-<mat-form-field>
-  <mat-label>Pasta</mat-label>
-  <mat-select [(ngModel)]="selectedFolder" (selectionChange)="onFolderSelect()">
-    <mat-option *ngFor="let folder of subfolders" [value]="folder">{{ folder }}</mat-option>
-  </mat-select>
-</mat-form-field>
-
-<!-- Select an Audio File -->
-<h2>Selecione um Arquivo de Áudio</h2>
-<mat-form-field>
-  <mat-label>Áudio</mat-label>
-  <mat-select [(ngModel)]="selectedAudio" (selectionChange)="onAudioFileSelect()">
-    <mat-option *ngFor="let file of audioFiles" [value]="file">{{ file }}</mat-option>
-  </mat-select>
-</mat-form-field>
-
-<!-- Audio Player Controls -->
-<div class="controls">
-  <button mat-icon-button (click)="stepBackward()">&#9664;&#9664;</button>
-  <button mat-icon-button (click)="togglePlayPause()">
-    {{ isPlaying ? '&#10074;&#10074;' : '&#9654;' }}
-  </button>
-  <button mat-icon-button (click)="stepForward()">&#9654;&#9654;</button>
-</div>
-
-<!-- Audio Player -->
-<audio #audioPlayer controls *ngIf="audioUrl">
-  <source [src]="audioUrl" type="audio/mpeg">
-  Seu navegador não suporta o elemento de áudio.
-</audio>
-
-<!-- Slider to select the cut range -->
-<ngx-slider
-  [(value)]="range[0]"
-  [(highValue)]="range[1]"
-  [options]="sliderOptions"
-  class="cut-slider">
-</ngx-slider>
-
-<!-- Time inputs -->
-<div class="controls">
-  <div class="control">
-    <label for="startTime">Início do corte</label>
-    <input type="number" [(ngModel)]="range[0]" step="0.01" (change)="seekTo(range[0])">
+<div class="container">
+  <!-- Seção de seleção de rádios -->
+  <div class="section radios">
+    <h2>Selecione uma Rádio</h2>
+    <mat-form-field>
+      <mat-label>Rádio</mat-label>
+      <mat-select [(ngModel)]="selectedRadio" (selectionChange)="onRadioSelect()">
+        <mat-option *ngFor="let radio of radios" [value]="radio">{{ radio }}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
-  <div class="control">
-    <label for="endTime">Final do corte</label>
-    <input type="number" [(ngModel)]="range[1]" step="0.01" (change)="seekTo(range[1])">
+
+  <!-- Seção de arquivos de áudio -->
+  <div class="section audio-files">
+    <h2>Selecione um Arquivo de Áudio</h2>
+    <mat-form-field>
+      <mat-label>Áudio</mat-label>
+      <mat-select [(ngModel)]="selectedAudio" (selectionChange)="onAudioFileSelect()">
+        <mat-option *ngFor="let file of audioFiles" [value]="file">{{ file }}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
-</div>
+
+  <!-- Player de Áudio e controles -->
+  <div class="section audio-player">
+    <h2>Player de Áudio</h2>
+    <div class="controls">
+      <button mat-icon-button (click)="stepBackward()">&#9664;&#9664;</button>
+      <button mat-icon-button (click)="togglePlayPause()">
+        {{ isPlaying ? '&#10074;&#10074;' : '&#9654;' }}
+      </button>
+      <button mat-icon-button (click)="stepForward()">&#9654;&#9654;</button>
+    </div>
+    <audio #audioPlayer controls *ngIf="audioUrl">
+      <source [src]="audioUrl" type="audio/mpeg">
+      Seu navegador não suporta o elemento de áudio.
+    </audio>
+  </div>
+
+  <div class="section cut-range">
+    <h2>Definir Corte de Áudio</h2>
+    <ngx-slider [(value)]="range[0]" [(highValue)]="range[1]" [options]="sliderOptions" class="cut-slider" (userChangeEnd)="seekTo(range[0])"></ngx-slider>
+
+    <div class="time-inputs">
+      <div class="control">
+        <label for="startTime">Início do corte</label>
+        <input type="number" [(ngModel)]="range[0]" step="0.01" (change)="seekTo(range[0])">
+      </div>
+      <div class="control">
+        <label for="endTime">Final do corte</label>
+        <input type="number" [(ngModel)]="range[1]" step="0.01" (change)="seekTo(range[1])">
+      </div>
+    </div>
+
+    <!-- Controles de reprodução personalizados -->
+    <div class="controls">
+      <button mat-icon-button (click)="stepBackward()">&#9664;&#9664;</button>
+      <button mat-icon-button (click)="togglePlayPause()">
+        {{ isPlaying ? '&#10074;&#10074;' : '&#9654;' }}
+      </button>
+      <button mat-icon-button (click)="stepForward()">&#9654;&#9654;</button>
+    </div>
+
+    <!-- Exibir tempo atual de reprodução -->
+    <p>Tempo atual: {{ currentTime }}s</p>
+    <button mat-raised-button color="primary" (click)="onCutAudio()">Fazer Corte</button>
+  </div>

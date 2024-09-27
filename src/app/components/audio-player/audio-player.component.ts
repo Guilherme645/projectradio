@@ -23,6 +23,8 @@ export class AudioPlayerComponent implements OnInit {
   cutProgress = 0;  // Progresso do corte
   cutCompleted = false;  // Se o corte foi concluído
   cutAudioUrl = '';  // URL do áudio cortado
+  audio!: HTMLAudioElement;  // Instância do objeto Audio
+  currentTime = 0; // Tempo atual do áudio
 
   constructor(private audioService: AudioService) {}
 
@@ -30,6 +32,24 @@ export class AudioPlayerComponent implements OnInit {
     this.loadRadios();
     this.initializeSliderOptions();
   }
+// Função para realizar o corte de áudio (simulado no frontend)
+onCutAudio() {
+  const radioName = this.selectedRadio; // Nome da rádio selecionada
+  const fileName = this.selectedAudio;  // Nome do arquivo de áudio selecionado
+  const startSeconds = this.range[0];   // Início do corte (segundos)
+  const durationSeconds = this.range[1] - this.range[0];  // Duração do corte (segundos)
+
+  this.audioService.cutAudio(radioName, fileName, startSeconds, durationSeconds)
+    .subscribe((blob: Blob) => {
+      // Aqui você pode baixar o arquivo ou salvar
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${fileName}-corte.mp3`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+}
 
   // Carregar a lista de rádios
   loadRadios() {
@@ -42,7 +62,6 @@ export class AudioPlayerComponent implements OnInit {
   onRadioSelect() {
     if (this.selectedRadio) {
       this.audioService.listContentsFromRadio(this.selectedRadio).subscribe((response: any) => {
-        console.log(response);  // Verifique o que está sendo retornado da API
         this.subfolders = response.subfolders || [];  // Subpastas
         this.audioFiles = response.files || [];  // Arquivos
         this.selectedFolder = '';
@@ -70,43 +89,56 @@ export class AudioPlayerComponent implements OnInit {
   onAudioFileSelect() {
     if (this.selectedAudio) {
       this.audioUrl = this.audioService.getAudioUrl(this.selectedRadio, this.selectedAudio);
+      this.initializeAudio();
       this.playAudio();
     }
   }
 
-  // Reproduzir o áudio selecionado
-  playAudio() {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.audioPlayer.nativeElement.src = this.audioUrl;
-      this.audioPlayer.nativeElement.play();
-      this.isPlaying = true;
-    }
-  }
+  // Inicializar o objeto de áudio
+  initializeAudio() {
+    this.audio = new Audio(this.audioUrl);
+    this.audio.addEventListener('timeupdate', () => {
+      this.currentTime = this.audio.currentTime;
 
-  // Alternar reprodução/pausa
-  togglePlayPause() {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      if (this.isPlaying) {
-        this.audioPlayer.nativeElement.pause();
-      } else {
-        this.audioPlayer.nativeElement.play();
+      // Pausar quando chegar ao final do corte
+      if (this.audio.currentTime >= this.range[1]) {
+        this.audio.pause();
+        this.audio.currentTime = this.range[0];  // Reiniciar no início do corte
+        this.isPlaying = false;
       }
-      this.isPlaying = !this.isPlaying;
-    }
+    });
   }
 
-  // Retroceder o áudio
+  // Reproduzir o áudio a partir do início do corte
+  playAudio() {
+    this.audio.currentTime = this.range[0];  // Iniciar no ponto de corte inicial
+    this.audio.play();
+    this.isPlaying = true;
+  }
+
+  // Pausar ou continuar reprodução
+  togglePlayPause() {
+    if (this.isPlaying) {
+      this.audio.pause();
+    } else {
+      this.playAudio();
+    }
+    this.isPlaying = !this.isPlaying;
+  }
+
+  // Atualizar o tempo de início do áudio conforme o slider
+  seekTo(time: number) {
+    this.audio.currentTime = time;
+  }
+
+  // Retroceder o áudio 10 segundos
   stepBackward() {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.audioPlayer.nativeElement.currentTime -= 10;  // Retroceder 10 segundos
-    }
+    this.audio.currentTime = Math.max(0, this.audio.currentTime - 10);
   }
 
-  // Avançar o áudio
+  // Avançar o áudio 10 segundos
   stepForward() {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.audioPlayer.nativeElement.currentTime += 10;  // Avançar 10 segundos
-    }
+    this.audio.currentTime = Math.min(this.audio.duration, this.audio.currentTime + 10);
   }
 
   // Inicializar as opções do slider
@@ -119,12 +151,5 @@ export class AudioPlayerComponent implements OnInit {
         return `${value}s`;
       }
     };
-  }
-
-  // Atualizar o tempo de corte
-  seekTo(time: number) {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.audioPlayer.nativeElement.currentTime = time;
-    }
   }
 }

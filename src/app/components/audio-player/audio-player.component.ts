@@ -1,6 +1,7 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AudioService } from 'src/app/services/audio.service';
 import { MatSnackBar } from '@angular/material/snack-bar'; // Importar MatSnackBar
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-audio-player',
@@ -32,10 +33,10 @@ export class AudioPlayerComponent implements OnInit {
   streamUrl: string = '';
   radioName: string = '';
   message: string = '';
-  progress: number = 0;  // Progresso do corte em porcentagem
+  progress: number = 0;
+  
 
-
-  constructor(private audioService: AudioService, private snackBar: MatSnackBar) {}
+  constructor(private audioService: AudioService, private snackBar: MatSnackBar,private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadRadios();
@@ -220,52 +221,55 @@ export class AudioPlayerComponent implements OnInit {
 }
 corteLive() {
   if (this.streamUrl && this.radioName) {
-    this.isCutting = true;
-    this.progress = 0;
-
     this.audioService.cutLiveStream(this.streamUrl, this.radioName)
       .subscribe(
-        (response) => {
-          if (response.status === 'success') {
-            this.message = response.message;
-            this.isCutting = false;
-            this.progress = 100; // Progresso final
-          } else {
-            this.message = `Erro: ${response.message}`;
-            this.isCutting = false;
+        (event: HttpEvent<any>) => {
+          switch (event.type) {
+            case HttpEventType.UploadProgress:
+              if (event.total) {
+                // Log para verificar o progresso no console
+                console.log(`Progresso: ${event.loaded} de ${event.total}`);
+                // Calcula o progresso
+                const percentDone = Math.round((100 * event.loaded) / event.total);
+                this.progress = percentDone;
+                this.cdr.detectChanges(); // Atualiza o template
+              }
+              break;
+            case HttpEventType.Response:
+              // Quando a operação for completada
+              if (event.body.status === 'success') {
+                this.message = event.body.message;
+                this.progress = 100;
+              } else {
+                this.message = `Erro: ${event.body.message}`;
+              }
+              this.cdr.detectChanges();
+              break;
+            default:
+              this.message = 'Processando...';
+              this.cdr.detectChanges();
+              break;
           }
         },
         (error) => {
           console.error('Erro ao iniciar o corte:', error);
           this.message = 'Erro ao iniciar o corte.';
-          this.isCutting = false;
+          this.cdr.detectChanges();
         }
       );
-    
-    // Polling para verificar o progresso
-    const interval = setInterval(() => {
-      this.audioService.getCutProgress(this.radioName).subscribe((progress) => {
-        this.progress = progress;
-        if (this.progress >= 100) {
-          clearInterval(interval);
-          this.isCutting = false;
-        }
-      });
-    }, 1000);
   } else {
     this.message = 'Por favor, preencha todos os campos.';
+    this.cdr.detectChanges();
   }
 }
+
 cutonAudioFileSelect() {
   if (this.selectedSubfolder && this.selectedAudio) {
-    // Gera a URL do arquivo de áudio
     this.selectedAudio = this.audioService.getCorteAudioUrl(this.selectedSubfolder, this.selectedAudio);
-
-    // Atualiza o player de áudio com a nova URL
     const player = this.audioPlayer.nativeElement;
-    player.src = this.selectedAudio;  // Define a URL no player
-    player.load();  // Carrega o arquivo no player
-    player.play();  // Inicia a reprodução automática
+    player.src = this.selectedAudio; 
+    player.load();  
+    player.play(); 
   } else {
     this.message = 'Por favor, selecione uma subpasta e um arquivo de áudio.';
   }

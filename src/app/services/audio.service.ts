@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -64,13 +64,16 @@ export class AudioService {
     return this.http.get<{ [key: string]: string[] }>(`${this.apiUrl}/list/cortes`);
   }
 
-  cutLiveStream(streamUrl: string, radioName: string): Observable<any> {
+  cutLiveStream(streamUrl: string, radioName: string): Observable<HttpEvent<any>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
     const body = `streamUrl=${encodeURIComponent(streamUrl)}&radioName=${encodeURIComponent(radioName)}`;
-
-    return this.http.post<any>('http://localhost:8080/audio/cut-live-segments', body, { headers });
+  
+    return this.http.post<any>('http://localhost:8080/audio/cut-live-segments', body, {
+      headers,
+      observe: 'events',  
+      reportProgress: true 
+    });
   }
-
   getCorteAudioUrl(subFolder: string, fileName: string): string {
     return `${this.apiUrl}/play/corte/${subFolder}/${fileName}`;
   }

@@ -16,13 +16,6 @@
 
     <button mat-raised-button color="primary" type="submit">Iniciar Corte</button>
   </form>
-
-  <div *ngIf="isCutting" class="progress-container">
-    <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
-    <p>{{ progress }}% completo</p>
-  </div>
-
-  <!-- Mensagem de sucesso ou erro após a conclusão -->
   <div *ngIf="message" class="message">
     <mat-card>
       <mat-card-content>
@@ -91,7 +84,6 @@
     <p>{{ progress }}% completo</p>
   </div>
 
-  <!-- Mensagem de sucesso -->
   <div *ngIf="cutCompleted" class="success-message">
     <mat-card>
       <mat-card-content>

@@ -5,7 +5,7 @@
   align-items: flex-start;
   gap: 20px;
   padding: 20px;
-  background-color: #F5F5F5; /* Fundo mais claro */
+  background-color: #F5F5F5;
 }
 
 .section {
@@ -15,24 +15,24 @@
   justify-content: center;
   width: 300px;
   height: 300px;
-  border: 1px solid #ddd; /* Bordas suaves */
+  border: 1px solid #ddd;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra mais leve */
-  background-color: #ffffff; /* Fundo branco dos componentes */
-  color: #333; /* Texto escuro para contraste */
-  transition: all 0.3s ease; /* Suavizar animações */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  color: #333;
+  transition: all 0.3s ease;
 }
 
 .section:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Efeito de sombra ao passar o mouse */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 h2 {
   font-size: 1.2rem;
   margin-bottom: 10px;
   text-transform: uppercase;
-  color: #1E88E5; /* Azul para dar contraste */
+  color: #1E88E5;
 }
 
 .mat-form-field {
@@ -74,7 +74,7 @@ cut-range {
   flex-direction: column;
   align-items: center;
   font-weight: bold;
-  color: #1E88E5; /* Azul claro */
+  color: #1E88E5;
 }
 
 .time-inputs input {
@@ -89,13 +89,13 @@ cut-range {
 
 button {
   margin-top: 10px;
-  width: 100%; /* Deixa o botão preencher toda a largura */
+  width: 100%;
 }
 
 .cut-range h2 {
   margin-bottom: 20px;
   text-transform: uppercase;
-  color: #1E88E5; /* Azul mais destacado */
+  color: #1E88E5;
 }
 
 p {
@@ -110,15 +110,15 @@ button {
   margin-top: 15px;
   border-radius: 4px;
   padding: 8px 16px;
-  background-color: #FFD700; /* Botão com fundo amarelo claro */
+  background-color: #FFD700;
   color: #fff;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #FFC300; /* Efeito de hover */
+  background-color: #FFC300;
 }
 
 .controls {
@@ -129,7 +129,7 @@ button:hover {
 }
 
 button.mat-icon-button {
-  background-color: #1E88E5; /* Botões principais com fundo azul */
+  background-color: #1E88E5;
   color: #fff;
   border-radius: 50%;
   padding: 10px;
@@ -137,7 +137,7 @@ button.mat-icon-button {
 }
 
 button.mat-raised-button {
-  background-color: #1E88E5; /* Azul para botões de ação */
+  background-color: #1E88E5;
   color: #fff;
   font-weight: bold;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);

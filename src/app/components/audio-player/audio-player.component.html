@@ -1,5 +1,19 @@
+<div class="card"></div>
+  <h2>INICIAR CORTE DA TRANSMISSÃO AO VIVO</h2>
+  <form (ngSubmit)="corteLive()">
+    <mat-form-field appearance="fill">
+      <mat-label>URL da Stream</mat-label>
+      <input matInput [(ngModel)]="streamUrl" name="streamUrl" placeholder="Insira a URL da transmissão" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Nome da Rádio</mat-label>
+      <input matInput [(ngModel)]="radioName" name="radioName" placeholder="Insira o nome da rádio" required />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">Iniciar Corte</button>
+  </form>
 <div class="container">
-  <!-- Quadrado 1: Seleção de Rádio -->
   <div class="section radios">
     <h2>Selecione uma Rádio</h2>
     <mat-form-field appearance="fill">
@@ -10,7 +24,6 @@
     </mat-form-field>
   </div>
 
-  <!-- Quadrado 2: Seleção de Arquivo de Áudio -->
   <div class="section audio-files">
     <h2>Selecione um Áudio de uma Rádio</h2>
     <mat-form-field appearance="fill">
@@ -21,7 +34,6 @@
     </mat-form-field>
   </div>
 
-  <!-- Quadrado 3: Player de Áudio -->
   <div class="section audio-player">
     <h2>Player de Áudio</h2>
     <div class="controls">
@@ -33,7 +45,6 @@
     </div>
   </div>
 
-  <!-- Quadrado 4: Definir Corte de Áudio -->
   <div class="section cut-range">
     <h2>Definir Corte de Áudio</h2>
     <ngx-slider [(value)]="range[0]" [(highValue)]="range[1]" [options]="sliderOptions" class="cut-slider"></ngx-slider>
@@ -57,7 +68,6 @@
     <button mat-raised-button color="primary" (click)="onCutAudio()">Fazer Corte</button>
   </div>
 
-  <!-- Quadrado 5: Seleção de Subpasta -->
   <div class="section subfolder-selection">
     <h2>Selecione uma data</h2>
     <mat-form-field appearance="fill">
@@ -70,7 +80,6 @@
     </mat-form-field>
   </div>
 
-  <!-- Quadrado 6: Seleção de Arquivo de Áudio da Subpasta -->
   <div class="section subfolder-audio-files">
     <h2>Selecione um corte</h2>
     <mat-form-field appearance="fill">

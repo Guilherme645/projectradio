@@ -19,8 +19,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { NouisliderModule } from 'ng2-nouislider';
-import { MatListModule } from '@angular/material/list'; // Importa o MatListModule
-import { MatIconModule } from '@angular/material/icon'; // Importa o MatIconModule
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,7 +45,7 @@ import { MatIconModule } from '@angular/material/icon'; // Importa o MatIconModu
     MatOptionModule,
     NgxSliderModule,
     NouisliderModule ,
-    MatListModule,            // Adiciona o MatListModule
+    MatListModule,
     MatIconModule,
 
   ],

@@ -1,18 +1,36 @@
-<div class="live-cut-section">
+<h2><strong>CLIP MASTER</strong></h2>
+<div class="card">
   <h2>INICIAR CORTE DA TRANSMISSÃO AO VIVO</h2>
   <form (ngSubmit)="corteLive()">
-    <mat-form-field appearance="fill">
-      <mat-label>URL da Stream</mat-label>
-      <input matInput [(ngModel)]="streamUrl" name="streamUrl" placeholder="Insira a URL da transmissão" required />
-    </mat-form-field>
+    <div class="input-group">
+      <mat-form-field appearance="fill">
+        <mat-label>URL da Stream</mat-label>
+        <input matInput [(ngModel)]="streamUrl" name="streamUrl" placeholder="Insira a URL da transmissão" required />
+      </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Nome da Rádio</mat-label>
-      <input matInput [(ngModel)]="radioName" name="radioName" placeholder="Insira o nome da rádio" required />
-    </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Nome da Rádio</mat-label>
+        <input matInput [(ngModel)]="radioName" name="radioName" placeholder="Insira o nome da rádio" required />
+      </mat-form-field>
+    </div>
 
     <button mat-raised-button color="primary" type="submit">Iniciar Corte</button>
   </form>
+
+  <div *ngIf="isCutting" class="progress-container">
+    <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+    <p>{{ progress }}% completo</p>
+  </div>
+
+  <!-- Mensagem de sucesso ou erro após a conclusão -->
+  <div *ngIf="message" class="message">
+    <mat-card>
+      <mat-card-content>
+        <h3>{{ message }}</h3>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
 <div class="container">
   <div class="section radios">
     <h2>Selecione uma Rádio</h2>
@@ -94,12 +112,11 @@
       </mat-select>
     </mat-form-field>
   </div>
-  
   <div class="section subfolder-audio-files">
     <h2>Selecione um corte</h2>
     <mat-form-field appearance="fill">
       <mat-label>Corte:</mat-label>
-      <mat-select [(ngModel)]="selectedAudio" (selectionChange)="onAudioFileSelect()">
+      <mat-select [(ngModel)]="selectedAudio" (selectionChange)="cutonAudioFileSelect()">
         <mat-option *ngFor="let file of filesInSelectedSubfolder" [value]="file">
           {{ file }}
         </mat-option>
@@ -110,7 +127,8 @@
   <div class="section audio-player">
     <h2>Player de Corte</h2>
     <audio #audioPlayer controls>
-      <source [src]="audioUrl" type="audio/mpeg">
+      <source [src]="selectedAudio" type="audio/mp3">
       Seu navegador não suporta o elemento de áudio.
     </audio>
   </div>
+  

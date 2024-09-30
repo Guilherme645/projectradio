@@ -218,31 +218,57 @@ export class AudioPlayerComponent implements OnInit {
   playCut(file: string) {
 
 }
-corteLive(){
+corteLive() {
   if (this.streamUrl && this.radioName) {
+    this.isCutting = true;
+    this.progress = 0;
+
     this.audioService.cutLiveStream(this.streamUrl, this.radioName)
       .subscribe(
         (response) => {
           if (response.status === 'success') {
             this.message = response.message;
+            this.isCutting = false;
+            this.progress = 100; // Progresso final
           } else {
             this.message = `Erro: ${response.message}`;
+            this.isCutting = false;
           }
         },
         (error) => {
           console.error('Erro ao iniciar o corte:', error);
           this.message = 'Erro ao iniciar o corte.';
+          this.isCutting = false;
         }
       );
+    
+    // Polling para verificar o progresso
+    const interval = setInterval(() => {
+      this.audioService.getCutProgress(this.radioName).subscribe((progress) => {
+        this.progress = progress;
+        if (this.progress >= 100) {
+          clearInterval(interval);
+          this.isCutting = false;
+        }
+      });
+    }, 1000);
   } else {
     this.message = 'Por favor, preencha todos os campos.';
   }
 }
-cutAudioSelect() {
-  if (this.selectedAudio && this.selectedRadio) {
-    const audioUrl = this.audioService.getCutAudioUrl(this.selectedRadio, this.selectedAudio);
-    this.audioPlayer.nativeElement.src = audioUrl;  // Atualiza a fonte do player com o URL do corte
-    this.audioPlayer.nativeElement.play();  // Inicia a reprodução
+cutonAudioFileSelect() {
+  if (this.selectedSubfolder && this.selectedAudio) {
+    // Gera a URL do arquivo de áudio
+    this.selectedAudio = this.audioService.getCorteAudioUrl(this.selectedSubfolder, this.selectedAudio);
+
+    // Atualiza o player de áudio com a nova URL
+    const player = this.audioPlayer.nativeElement;
+    player.src = this.selectedAudio;  // Define a URL no player
+    player.load();  // Carrega o arquivo no player
+    player.play();  // Inicia a reprodução automática
+  } else {
+    this.message = 'Por favor, selecione uma subpasta e um arquivo de áudio.';
   }
 }
+
 }

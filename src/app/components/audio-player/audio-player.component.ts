@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { AudioService } from 'src/app/services/audio.service';
+import { MatSnackBar } from '@angular/material/snack-bar'; // Importar MatSnackBar
 
 @Component({
   selector: 'app-audio-player',
@@ -31,30 +32,80 @@ export class AudioPlayerComponent implements OnInit {
   streamUrl: string = '';
   radioName: string = '';
   message: string = '';
+  progress: number = 0;  // Progresso do corte em porcentagem
 
-  constructor(private audioService: AudioService) {}
+
+  constructor(private audioService: AudioService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.loadRadios();
     this.initializeSliderOptions();
     this.loadCutsList();
   }
-onCutAudio() {
-  const radioName = this.selectedRadio;
-  const fileName = this.selectedAudio;
-  const startSeconds = this.range[0];
-  const durationSeconds = this.range[1] - this.range[0];
+  onCutAudio() {
+    const radioName = this.selectedRadio;
+    const fileName = this.selectedAudio;
+    const startSeconds = this.range[0];
+    const durationSeconds = this.range[1] - this.range[0];
 
-  this.audioService.cutAudio(radioName, fileName, startSeconds, durationSeconds)
-    .subscribe((blob: Blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${fileName}-corte.mp3`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
-}
+    // Exibe a barra de progresso
+    this.isCutting = true;
+    this.cutCompleted = false;
+    this.progress = 0;
+
+    const xhr = new XMLHttpRequest();
+    const params = `startSeconds=${startSeconds}&durationSeconds=${durationSeconds}`;
+    const url = `http://localhost:8080/audio/cut/${radioName}/${fileName}?${params}`;
+
+    xhr.open('POST', url, true);
+    xhr.responseType = 'blob';
+
+    xhr.onprogress = (event) => {
+      if (event.lengthComputable) {
+        this.progress = Math.round((event.loaded / event.total) * 100);
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const blob = xhr.response;
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `${fileName}-corte.mp3`;
+        a.click();
+        window.URL.revokeObjectURL(downloadUrl);
+
+        // Atualiza a barra de progresso e mostra mensagem de sucesso
+        this.progress = 100;
+        this.isCutting = false;
+        this.cutCompleted = true;
+        this.snackBar.open('Corte feito com sucesso!', 'Fechar', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
+      } else {
+        console.error('Erro ao realizar o corte:', xhr.statusText);
+        this.isCutting = false;
+        this.snackBar.open('Erro ao realizar o corte', 'Fechar', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
+      }
+    };
+
+    xhr.onerror = () => {
+      console.error('Erro na solicitação.');
+      this.isCutting = false;
+      this.snackBar.open('Erro ao realizar o corte', 'Fechar', {
+        duration: 3000,
+        verticalPosition: 'top'
+      });
+    };
+
+    xhr.send();
+  }
+
 
   loadRadios() {
     this.audioService.listRadios().subscribe((radios) => {
@@ -185,6 +236,13 @@ corteLive(){
       );
   } else {
     this.message = 'Por favor, preencha todos os campos.';
+  }
+}
+cutAudioSelect() {
+  if (this.selectedAudio && this.selectedRadio) {
+    const audioUrl = this.audioService.getCutAudioUrl(this.selectedRadio, this.selectedAudio);
+    this.audioPlayer.nativeElement.src = audioUrl;  // Atualiza a fonte do player com o URL do corte
+    this.audioPlayer.nativeElement.play();  // Inicia a reprodução
   }
 }
 }

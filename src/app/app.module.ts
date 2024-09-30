@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
 import { AudioPlayerComponent } from './components/audio-player/audio-player.component';
 import { RouterModule } from '@angular/router';
@@ -47,6 +47,7 @@ import { MatIconModule } from '@angular/material/icon';
     NouisliderModule ,
     MatListModule,
     MatIconModule,
+    MatSnackBarModule
 
   ],
   providers: [],

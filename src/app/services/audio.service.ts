@@ -71,4 +71,7 @@ export class AudioService {
     return this.http.post<any>('http://localhost:8080/audio/cut-live-segments', body, { headers });
   }
 
+getCutAudioUrl(subfolder: string, fileName: string): string {
+  return `http://localhost:8080/audio/play-cut/${subfolder}/${fileName}`;
+}
 }

@@ -1,4 +1,4 @@
-<div class="card"></div>
+<div class="live-cut-section">
   <h2>INICIAR CORTE DA TRANSMISSÃO AO VIVO</h2>
   <form (ngSubmit)="corteLive()">
     <mat-form-field appearance="fill">
@@ -68,6 +68,21 @@
     <button mat-raised-button color="primary" (click)="onCutAudio()">Fazer Corte</button>
   </div>
 
+  <div *ngIf="isCutting" class="progress-section">
+    <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+    <p>{{ progress }}% completo</p>
+  </div>
+
+  <!-- Mensagem de sucesso -->
+  <div *ngIf="cutCompleted" class="success-message">
+    <mat-card>
+      <mat-card-content>
+        <h3>Corte feito com sucesso!</h3>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+
   <div class="section subfolder-selection">
     <h2>Selecione uma data</h2>
     <mat-form-field appearance="fill">
@@ -79,16 +94,23 @@
       </mat-select>
     </mat-form-field>
   </div>
-
+  
   <div class="section subfolder-audio-files">
     <h2>Selecione um corte</h2>
     <mat-form-field appearance="fill">
       <mat-label>Corte:</mat-label>
-      <mat-select [(ngModel)]="selectedAudio" (selectionChange)="onAudioSelect()">
+      <mat-select [(ngModel)]="selectedAudio" (selectionChange)="onAudioFileSelect()">
         <mat-option *ngFor="let file of filesInSelectedSubfolder" [value]="file">
           {{ file }}
         </mat-option>
       </mat-select>
     </mat-form-field>
   </div>
-</div>
+  
+  <div class="section audio-player">
+    <h2>Player de Corte</h2>
+    <audio #audioPlayer controls>
+      <source [src]="audioUrl" type="audio/mpeg">
+      Seu navegador não suporta o elemento de áudio.
+    </audio>
+  </div>
